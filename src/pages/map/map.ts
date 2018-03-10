@@ -1,12 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
+import { HttpClient } from '@angular/common/http';
+import { LoadingController } from 'ionic-angular';
 
-/**
- * Generated class for the MapPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @Component({
   selector: 'page-map',
@@ -14,10 +10,33 @@ import { NavController, NavParams } from 'ionic-angular';
 })
 export class MapPage {
 
-  lat: number = 51.678418;
-  lng: number = 7.809007;
+  lat = 51.678418;
+  lng = 7.809007;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  private jobs;
+
+  constructor(public navCtrl: NavController, public httpClient: HttpClient, public loadingCtrl: LoadingController) {
+  }
+
+  ionViewDidLoad() {
+    this.fetchJobs();
+  }
+
+  fetchJobs() {
+    let loading = this.loadingCtrl.create({
+      content: "Veuillez patienter...",
+    });
+    loading.present();
+    this.httpClient.get('https://mobile-api-jobs.herokuapp.com/api/jobs').subscribe(data => {
+      loading.dismiss();
+      this.jobs = data.map(job => (
+        {
+          ...job,
+          latitude: Number(job.latitude),
+          longitude: Number(job.longitude),
+        }
+      ))
+    });
   }
 
 }
