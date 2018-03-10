@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { HttpClient } from '@angular/common/http';
 import { LoadingController } from 'ionic-angular';
+import { ApiProvider } from './../../providers/api/api';
 
 @Component({
   selector: 'page-list',
@@ -11,7 +11,7 @@ export class ListPage {
 
   private jobs;
 
-  constructor(public navCtrl: NavController,  public httpClient: HttpClient, public loadingCtrl: LoadingController) {
+  constructor(public navCtrl: NavController,  public apiProvider: ApiProvider, public loadingCtrl: LoadingController) {
     this.jobs = [];
   }
 
@@ -20,13 +20,14 @@ export class ListPage {
   }
 
   fetchJobs() {
-    let loading = this.loadingCtrl.create({
-      content: "Veuillez patienter...",
-    });
+    let loading = this.loadingCtrl.create({ content: "Veuillez patienter..." });
     loading.present();
-    this.httpClient.get('https://mobile-api-jobs.herokuapp.com/api/jobs').subscribe(data => {
+    this.apiProvider.getJobs()
+    .then(jobs => {
+      this.jobs = jobs;
       loading.dismiss();
-      this.jobs = data
+    }).catch(error => {
+      console.error(error)
     });
   }
 

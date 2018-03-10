@@ -1,16 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { HttpClient } from '@angular/common/http';
 import { Geolocation } from '@ionic-native/geolocation';
 import { LoadingController } from 'ionic-angular';
-
-interface Job {
-  latitude: String;
-	longitude: String;
-	name: String;
-}
-
-type Response = Job[];
+import { ApiProvider } from './../../providers/api/api';
 
 @Component({
   selector: 'page-map',
@@ -25,7 +17,7 @@ export class MapPage {
 
   constructor(
     public navCtrl: NavController,
-    public httpClient: HttpClient,
+    public apiProvider: ApiProvider,
     private geolocation: Geolocation,
     public loadingCtrl: LoadingController) {
   }
@@ -34,7 +26,7 @@ export class MapPage {
     this.fetchJobs();
     this.geolocation.getCurrentPosition({
       enableHighAccuracy: true,
-      timeout: 3000,
+      timeout: 10000,
     }).then((resp) => {
       this.lat = resp.coords.latitude;
       this.lng = resp.coords.longitude;
@@ -48,15 +40,12 @@ export class MapPage {
       content: "Veuillez patienter...",
     });
     loading.present();
-    this.httpClient.get('https://mobile-api-jobs.herokuapp.com/api/jobs').subscribe((data: Response) => {
+    this.apiProvider.getJobs()
+    .then(jobs => {
+      this.jobs = jobs;
       loading.dismiss();
-      this.jobs = data.map(job => (
-        {
-          ...job,
-          latitude: Number(job.latitude),
-          longitude: Number(job.longitude),
-        }
-      ))
+    }).catch(error => {
+      console.error(error)
     });
   }
 

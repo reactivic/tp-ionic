@@ -13,6 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AgmCoreModule } from '@agm/core';
 import { Geolocation } from '@ionic-native/geolocation';
+import { ApiProvider } from '../providers/api/api';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { Geolocation } from '@ionic-native/geolocation';
     StatusBar,
     Geolocation,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    ApiProvider,
   ]
 })
 export class AppModule {}
