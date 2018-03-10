@@ -33,6 +33,8 @@ export class MapPage {
   ionViewDidLoad() {
     this.fetchJobs();
     this.geolocation.getCurrentPosition({
+      enableHighAccuracy: true,
+      timeout: 3000,
     }).then((resp) => {
       this.lat = resp.coords.latitude;
       this.lng = resp.coords.longitude;
