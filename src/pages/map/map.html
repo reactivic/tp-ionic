@@ -14,7 +14,7 @@
 
 
 <ion-content padding>
-  <agm-map [zoom]="3" [latitude]="lat" [longitude]="lng">
+  <agm-map [zoom]="10" [latitude]="lat" [longitude]="lng">
     <agm-marker *ngFor="let job of jobs" [latitude]="job.latitude" [longitude]="job.longitude">
         <agm-info-window>
           <strong>{{ job.name }}</strong>
